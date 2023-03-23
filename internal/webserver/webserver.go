@@ -1,7 +1,6 @@
 package webserver
 
 import (
-	"log"
 	"music-creator/internal/webserver/song"
 
 	"github.com/gin-gonic/gin"
@@ -15,10 +14,7 @@ type config struct {
 func Run() {
 	// gin.SetMode(gin.DebugMode)
 	r := gin.Default()
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+	godotenv.Load()
 	songCtrl := song.NewSongCtrl()
 	r.POST("/song", songCtrl.CreateSong)
 	r.Run()
