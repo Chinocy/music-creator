@@ -17,5 +17,6 @@ func Run() {
 	godotenv.Load()
 	songCtrl := song.NewSongCtrl()
 	r.POST("/song", songCtrl.CreateSong)
+	r.GET("/song/choices", songCtrl.GetChoices)
 	r.Run()
 }
