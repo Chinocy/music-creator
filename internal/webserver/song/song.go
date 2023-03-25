@@ -2,26 +2,14 @@ package song
 
 import (
 	"music-creator/internal/services/openai"
+	"music-creator/internal/util"
 	"net/http"
 	"os"
+	"reflect"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
-
-var emotions = []string{
-	"amusement", "joy", "eroticism", "euphoric", "relaxation", "sadness",
-	"dreaminess", "triumph", "anxiety", "scariness", "annoyance", "defiance",
-}
-
-var genres = []string{
-	"rock", "pop", "hip hop", "reggae", "salsa", "merengue", "bachata", "funk", "soul", "reggaeton",
-}
-
-var languages = []string{
-	"english", "spanish",
-}
-
-// bpm 20-200
 
 type SongCtrl struct {
 	openAIService *openai.OpenAIService
@@ -39,18 +27,27 @@ func NewSongCtrl() SongCtrl {
 	return ctrl
 }
 
-type Params struct {
-	Message string
+type Body struct {
+	BPM      int    `json:"bpm" validate:"required,min=20,max=200"`
+	Emotion  string `json:"emotion" validate:"required,is-emotion"`
+	Language string `json:"language" validate:"required,is-language"`
+	Genre    string `json:"genre" validate:"required,is-genre"`
+	Subject  string `json:"subject" validate:"required"`
 }
 
 func (ctrl *SongCtrl) CreateSong(c *gin.Context) {
-	params := new(Params)
-	err := c.Bind(params)
+	body := new(Body)
+	err := c.Bind(body)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	content, err := ctrl.openAIService.CreateSong(c, params.Message)
+	clientErrs := util.ValidateStruct(body)
+	if len(clientErrs) > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": clientErrs})
+		return
+	}
+	content, err := ctrl.openAIService.CreateSong(c, body.Subject)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -60,7 +57,13 @@ func (ctrl *SongCtrl) CreateSong(c *gin.Context) {
 
 func (ctrl *SongCtrl) GetChoices(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
-		"emotions":  emotions,
-		"genres":    genres,
-		"languages": languages})
+		"emotions":  util.Emotions,
+		"genres":    util.Genres,
+		"languages": util.Languages})
+}
+
+// GetFieldNameFromJSONTag custom function tag for fix get field name from json tag
+func GetFieldNameFromJSONTag(fld reflect.StructField) string {
+	name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+	return name
 }
