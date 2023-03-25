@@ -2,9 +2,11 @@ package main
 
 import (
 	"music-creator/internal/webserver"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	// client := openai.NewClient("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")
+	godotenv.Load()
 	webserver.Run()
 }
