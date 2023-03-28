@@ -17,7 +17,8 @@ func TestCreateSong(t *testing.T) {
 			Token: os.Getenv("OPENAI_TOKEN"),
 		},
 	)
-	_, err := openAIService.CreateSong(context.Background(), 60, "Relax And Chill", "joy", "spanish", "reggae")
+	song, err := openAIService.CreateSong(context.Background(), 60, "Relax And Chill", "joy", "spanish", "reggae")
 	assert.Nil(t, err)
-	// assert.Equal(t, true, len(song) > 1)
+	assert.Equal(t, true, len(song.Paragraphs) > 1)
+	assert.Equal(t, true, song.Title != "")
 }

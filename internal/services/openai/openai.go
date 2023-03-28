@@ -106,8 +106,7 @@ func GetTitleAndParagraphs(content string) (title string, ps []Paragraph) {
 		if strings.Contains(splitted[0], "Title") {
 			if len(splitted) > 0 {
 				title = strings.Replace(splitted[1], "\"", "", -1)
-			} else {
-				title = "Without title"
+				title = strings.TrimSpace(title)
 			}
 			continue
 		}
