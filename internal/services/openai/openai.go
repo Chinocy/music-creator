@@ -50,19 +50,15 @@ type Phrase struct {
 func (o *OpenAIService) CreateSong(ctx context.Context,
 	bpm int, subject, emotion, language, genre string,
 ) (song Song, err error) {
-	// Please add a chord progression with the lyrics in every line to it as well.
-	// All chord progressions are without parenthesis and must be separated with an white space.
-
 	request := util.CompactString(fmt.Sprintf(`
 	Hello! Create a complete song of which tempo is around %d BPM.
 	It must be about %s. It musical genre is %s. 
 	It must transmit %s and it must be in %s.
-	Include title. Exclude intro. 
+	Each line of the lyrics must be accompanied by its chord progression which must come before it excluding non-chord text.
+	Each chords must be separated with a dash.
+	Include title.
 	Exclude non-song text.
 	Every paragraph must be separated by 2 break lines and its lines must be separated by 1 break line.
-	Each line of the lyric must be accompanied by its chord progression.
-	All chords must be separated with a dash.
-	Repeat paragraphs or stanzas or verses or phrases as much as needed, don't use multiplication.
 	`, bpm, subject, genre, emotion, language))
 
 	fmt.Println(request)
@@ -103,26 +99,76 @@ func GetTitleAndParagraphs(content string) (title string, ps []Paragraph) {
 	paragraphs := strings.Split(content, "\n\n")
 	for _, p := range paragraphs {
 		lines := strings.Split(p, "\n")
+
+		// is Title paragraph
 		if strings.Contains(lines[0], "Title:") {
 			title = strings.Split(lines[0], ": ")[1]
+			title = strings.Replace(title, "\"", "", -1)
 			continue
 		}
 
+		splitted := strings.Split(lines[0], ":")
+		pTitle := strings.Replace(splitted[0], "(", "", -1)
+		pTitle = strings.Replace(pTitle, ")", "", -1)
+
 		newP := Paragraph{
-			Title:   lines[0],
+			Title:   pTitle,
 			Phrases: []Phrase{},
 		}
 
-		for i := 1; i+1 < len(lines); i = i + 2 {
-			chords := strings.Replace(lines[i], "-", " ", -1)
-			phrase := Phrase{
-				Text:   lines[i+1],
-				Chords: strings.Fields(chords),
-			}
-			newP.Phrases = append(newP.Phrases, phrase)
+		lastChord := []string{}
+		chordsAreFromHeader := false
+		if len(splitted) > 1 && isChord(splitted[1]) {
+			lastChord = getChords(splitted[1])
+			chordsAreFromHeader = true
 		}
 
+		for i := 1; i < len(lines); i++ {
+			if isChord(lines[i]) {
+				if !chordsAreFromHeader && len(lastChord) > 0 {
+					newP.Phrases = append(newP.Phrases, Phrase{
+						Text:   "",
+						Chords: lastChord,
+					})
+				}
+				lastChord = getChords(lines[i])
+			} else {
+				newP.Phrases = append(newP.Phrases, Phrase{
+					Text:   lines[i],
+					Chords: lastChord,
+				})
+				lastChord = []string{}
+			}
+		}
+		if !chordsAreFromHeader && len(lastChord) > 0 {
+			newP.Phrases = append(newP.Phrases, Phrase{
+				Text:   "",
+				Chords: lastChord,
+			})
+		}
 		ps = append(ps, newP)
 	}
+	return
+}
+
+func isChord(line string) bool {
+	size := len(strings.Split(line, "-"))
+	if size > 1 {
+		return true
+	}
+	splitted := strings.Split(line, " ")
+	for _, word := range splitted {
+		if len(word) > 3 {
+			return false
+		}
+	}
+	return true
+}
+
+func getChords(line string) (chords []string) {
+	chordText := strings.Replace(line, "(", " ", -1)
+	chordText = strings.Replace(chordText, ")", " ", -1)
+	chordText = strings.Replace(chordText, "|", " ", -1)
+	chords = strings.Fields(strings.Replace(chordText, "-", " ", -1))
 	return
 }
