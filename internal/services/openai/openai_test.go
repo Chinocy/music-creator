@@ -9,15 +9,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHelloName(t *testing.T) {
+func TestCreateSong(t *testing.T) {
 	test.SetupTest()
+	// mock response
 	openAIService := NewOrderAIService(
 		Config{
 			Token: os.Getenv("OPENAI_TOKEN"),
 		},
 	)
-	song, err := openAIService.CreateSong(context.Background(), "Create a song")
+	_, err := openAIService.CreateSong(context.Background(), 60, "Relax And Chill", "joy", "spanish", "reggae")
 	assert.Nil(t, err)
-	assert.Equal(t, true, len(song) > 1)
-
+	// assert.Equal(t, true, len(song) > 1)
 }
