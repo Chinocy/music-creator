@@ -28,7 +28,7 @@ func NewSongCtrl() SongCtrl {
 }
 
 type Body struct {
-	BPM      int    `json:"bpm" validate:"required,min=20,max=200"`
+	BPM      int    `json:"bpm" validate:"required,min=60,max=180"`
 	Emotion  string `json:"emotion" validate:"required,is-emotion"`
 	Language string `json:"language" validate:"required,is-language"`
 	Genre    string `json:"genre" validate:"required,is-genre"`
@@ -66,7 +66,9 @@ func (ctrl *SongCtrl) GetChoices(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"emotions":  util.Emotions,
 		"genres":    util.Genres,
-		"languages": util.Languages})
+		"languages": util.Languages,
+		"bpm":       util.BPMChoices,
+	})
 }
 
 // GetFieldNameFromJSONTag custom function tag for fix get field name from json tag

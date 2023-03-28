@@ -46,3 +46,7 @@ var LanguagesMap = map[string]bool{
 	"english": true,
 	"spanish": true,
 }
+
+var BPMChoices = []int{
+	60, 100, 140,
+}
