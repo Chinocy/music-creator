@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"reflect"
-	"regexp"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -50,15 +49,13 @@ func (ctrl *SongCtrl) CreateSong(c *gin.Context) {
 		return
 	}
 
-	message := compact(fmt.Sprintf(`
+	message := util.CompactString(fmt.Sprintf(`
 		Hello! Create a complete song of which tempo is around %d BPM.
 		It must be about %s. It musical genre is %s. 
 		It must transmit %s and it must be in %s. 
 		Please add a chord progression with the lyrics to it as well. 
 		Don't forget to add the title. Don't include non-song text.
 	`, body.BPM, body.Subject, body.Genre, body.Emotion, body.Language))
-
-	fmt.Println(message)
 
 	content, err := ctrl.openAIService.CreateSong(c, message)
 	if err != nil {
@@ -79,11 +76,4 @@ func (ctrl *SongCtrl) GetChoices(c *gin.Context) {
 func GetFieldNameFromJSONTag(fld reflect.StructField) string {
 	name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
 	return name
-}
-
-var spaceEater = regexp.MustCompile(`\s+`)
-
-func compact(q string) string {
-	q = strings.TrimSpace(q)
-	return spaceEater.ReplaceAllString(q, " ")
 }
