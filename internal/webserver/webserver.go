@@ -15,7 +15,7 @@ type config struct {
 func Authorize() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.Request.Header["Authorization"]
-		if token[0] != os.Getenv("AUTH_TOKEN") {
+		if len(token) == 0 || token[0] != os.Getenv("AUTH_TOKEN") {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"error": "unauthorized",
 			})
