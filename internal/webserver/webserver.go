@@ -4,7 +4,6 @@ import (
 	"music-creator/internal/webserver/song"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,12 +34,4 @@ func Run() {
 	r.POST("/song", songCtrl.CreateSong)
 	r.GET("/song/choices", songCtrl.GetChoices)
 	r.Run()
-
-	s := &http.Server{
-		Handler:        r,
-		ReadTimeout:    120 * time.Second,
-		WriteTimeout:   120 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
-	s.ListenAndServe()
 }
