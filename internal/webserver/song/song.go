@@ -53,9 +53,9 @@ func (ctrl *SongCtrl) CreateSong(c *gin.Context) {
 	message := compact(fmt.Sprintf(`
 		Hello! Create a complete song of which tempo is around %d BPM.
 		It must be about %s. It musical genre is %s. 
-		It must transmit %s, finally this must be in %s. 
+		It must transmit %s and it must be in %s. 
 		Please add a chord progression with the lyrics to it as well. 
-		Don't forget to add the title.
+		Don't forget to add the title. Don't include non-song text.
 	`, body.BPM, body.Subject, body.Genre, body.Emotion, body.Language))
 
 	fmt.Println(message)
