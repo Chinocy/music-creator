@@ -114,9 +114,10 @@ func GetTitleAndParagraphs(content string) (title string, ps []Paragraph) {
 		}
 
 		for i := 1; i+1 < len(lines); i = i + 2 {
+			chords := strings.Replace(lines[i], "-", " ", -1)
 			phrase := Phrase{
 				Text:   lines[i+1],
-				Chords: strings.Split(lines[i], "-"),
+				Chords: strings.Fields(chords),
 			}
 			newP.Phrases = append(newP.Phrases, phrase)
 		}
