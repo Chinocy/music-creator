@@ -57,10 +57,11 @@ func (o *OpenAIService) CreateSong(ctx context.Context,
 	Hello! Create a complete song of which tempo is around %d BPM.
 	It must be about %s. It musical genre is %s. 
 	It must transmit %s and it must be in %s.
-	Include title. Exclude intro. Exclude non-song text.
+	Include title. Exclude intro. 
+	Exclude non-song text.
 	Every paragraph must be separated by 2 break lines and its lines must be separated by 1 break line.
 	Each line of the lyric must be accompanied by its chord progression.
-	All chords must be separated with a white space.
+	All chords must be separated with a dash.
 	Repeat paragraphs or stanzas or verses or phrases as much as needed, don't use multiplication.
 	`, bpm, subject, genre, emotion, language))
 
@@ -106,17 +107,20 @@ func GetTitleAndParagraphs(content string) (title string, ps []Paragraph) {
 			title = strings.Split(lines[0], ": ")[1]
 			continue
 		}
+
 		newP := Paragraph{
-			Title:   strings.Split(lines[0], ":")[0],
+			Title:   lines[0],
 			Phrases: []Phrase{},
 		}
+
 		for i := 1; i+1 < len(lines); i = i + 2 {
 			phrase := Phrase{
-				Chords: strings.Fields(lines[i]),
 				Text:   lines[i+1],
+				Chords: strings.Split(lines[i], "-"),
 			}
 			newP.Phrases = append(newP.Phrases, phrase)
 		}
+
 		ps = append(ps, newP)
 	}
 	return
