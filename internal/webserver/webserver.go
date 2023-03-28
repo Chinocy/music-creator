@@ -11,8 +11,9 @@ type config struct {
 }
 
 func Run() {
-	r := gin.Default()
 	songCtrl := song.NewSongCtrl()
+
+	r := gin.Default()
 	r.POST("/song", songCtrl.CreateSong)
 	r.GET("/song/choices", songCtrl.GetChoices)
 	r.Run()
