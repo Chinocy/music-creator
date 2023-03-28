@@ -57,13 +57,15 @@ func (o *OpenAIService) CreateSong(ctx context.Context,
 	Hello! Create a complete song of which tempo is around %d BPM.
 	It must be about %s. It musical genre is %s. 
 	It must transmit %s and it must be in %s.
-	Include song title. Exclude song intro.
-	Don't include non-song text.
+	Include title. Exclude intro. Exclude non-song text.
 	Every paragraph must be separated by 2 break lines and its lines must be separated by 1 break line.
 	Each line of the lyric must be accompanied by its chord progression.
-	All chord progressions are without parenthesis and its chords must be separated with a white space. 
+	All chords must be separated with a white space.
 	Repeat paragraphs or stanzas or verses or phrases as much as needed, don't use multiplication.
 	`, bpm, subject, genre, emotion, language))
+
+	fmt.Println(request)
+
 	resp, err := o.client.CreateChatCompletion(
 		ctx,
 		goopenai.ChatCompletionRequest{
