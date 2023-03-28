@@ -22,7 +22,7 @@ func NewOrderAIService(cfg Config) *OpenAIService {
 	}
 }
 
-func (o *OpenAIService) CreateSong(ctx context.Context, request string) (content string, err error) {
+func (o *OpenAIService) CreateSong(ctx context.Context, message string) (content string, err error) {
 	resp, err := o.client.CreateChatCompletion(
 		ctx,
 		goopenai.ChatCompletionRequest{
@@ -30,7 +30,7 @@ func (o *OpenAIService) CreateSong(ctx context.Context, request string) (content
 			Messages: []goopenai.ChatCompletionMessage{
 				{
 					Role:    goopenai.ChatMessageRoleUser,
-					Content: request,
+					Content: message,
 				},
 			},
 		},
