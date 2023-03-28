@@ -56,7 +56,9 @@ func (o *OpenAIService) CreateSong(ctx context.Context,
 	It must be about %s. It musical genre is %s. 
 	It must transmit %s and it must be in %s. 
 	Please add a chord progression with the lyrics in every line to it as well. 
-	Don't forget to add the title. Don't include non-song text.
+	Don't forget to add the title. Don't include non-song text. 
+	Every paragraph must be separated by 2 break lines 
+	and every line of the paragraph must be separated by 1 break line
 	`, bpm, subject, genre, emotion, language))
 
 	resp, err := o.client.CreateChatCompletion(
