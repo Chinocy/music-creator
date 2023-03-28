@@ -33,7 +33,8 @@ type Song struct {
 	Genre      string      `json:"genre"`
 	Subject    string      `json:"subject"`
 	Paragraphs []Paragraph `json:"paragraphs"`
-	RawText    string      `json:"raw_text"`
+	Response   string      `json:"response"`
+	Request    string      `json:"request"`
 }
 
 type Paragraph struct {
@@ -50,7 +51,7 @@ func (o *OpenAIService) CreateSong(ctx context.Context,
 	bpm int, subject, emotion, language, genre string,
 ) (song Song, err error) {
 
-	message := util.CompactString(fmt.Sprintf(`
+	request := util.CompactString(fmt.Sprintf(`
 	Hello! Create a complete song of which tempo is around %d BPM.
 	It must be about %s. It musical genre is %s. 
 	It must transmit %s and it must be in %s. 
@@ -65,7 +66,7 @@ func (o *OpenAIService) CreateSong(ctx context.Context,
 			Messages: []goopenai.ChatCompletionMessage{
 				{
 					Role:    goopenai.ChatMessageRoleUser,
-					Content: message,
+					Content: request,
 				},
 			},
 		},
@@ -74,8 +75,8 @@ func (o *OpenAIService) CreateSong(ctx context.Context,
 		return
 	}
 
-	content := resp.Choices[0].Message.Content
-	title, paragraphs := GetTitleAndParagraphs(content)
+	response := resp.Choices[0].Message.Content
+	title, paragraphs := GetTitleAndParagraphs(response)
 	song = Song{
 		BPM:        bpm,
 		Subject:    subject,
@@ -84,7 +85,8 @@ func (o *OpenAIService) CreateSong(ctx context.Context,
 		Language:   language,
 		Paragraphs: paragraphs,
 		Title:      title,
-		RawText:    content,
+		Response:   response,
+		Request:    request,
 	}
 	return
 }
