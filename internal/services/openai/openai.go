@@ -100,19 +100,23 @@ func GetTitleAndParagraphs(content string) (title string, ps []Paragraph) {
 	for _, p := range paragraphs {
 		lines := strings.Split(p, "\n")
 
+		splitted := strings.Split(lines[0], ":")
+
 		// is Title paragraph
-		if strings.Contains(lines[0], "Title:") {
-			title = strings.Split(lines[0], ": ")[1]
-			title = strings.Replace(title, "\"", "", -1)
+		if strings.Contains(splitted[0], "Title") {
+			if len(splitted) > 0 {
+				title = strings.Replace(splitted[1], "\"", "", -1)
+			} else {
+				title = "Without title"
+			}
 			continue
 		}
 
-		splitted := strings.Split(lines[0], ":")
-		pTitle := strings.Replace(splitted[0], "(", "", -1)
-		pTitle = strings.Replace(pTitle, ")", "", -1)
+		pHeader := strings.Replace(splitted[0], "(", "", -1)
+		pHeader = strings.Replace(pHeader, ")", "", -1)
 
 		newP := Paragraph{
-			Title:   pTitle,
+			Title:   pHeader,
 			Phrases: []Phrase{},
 		}
 
