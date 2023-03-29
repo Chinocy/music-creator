@@ -155,13 +155,16 @@ func GetTitleAndParagraphs(content string) (title string, ps []Paragraph) {
 }
 
 func isChord(line string) bool {
-	size := len(strings.Split(line, "-"))
+	chordText := strings.Replace(line, "(", " ", -1)
+	chordText = strings.Replace(chordText, ")", " ", -1)
+	chordText = strings.Replace(chordText, "|", " ", -1)
+	size := len(strings.Split(chordText, "-"))
 	if size > 1 {
 		return true
 	}
-	splitted := strings.Split(line, " ")
+	splitted := strings.Split(chordText, " ")
 	for _, word := range splitted {
-		if len(word) > 3 {
+		if len(strings.TrimSpace(word)) > 3 {
 			return false
 		}
 	}
