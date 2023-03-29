@@ -6,7 +6,7 @@ services:
     env_file:
       - .env
     ports:
-      - "8080:8080"
+      - "80:8080"
     volumes:
             - .:/usr/src/app
     command: air main.go -b 0.0.0.0
