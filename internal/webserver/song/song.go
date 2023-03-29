@@ -1,6 +1,7 @@
 package song
 
 import (
+	"context"
 	"music-creator/internal/services/openai"
 	"music-creator/internal/util"
 	"net/http"
@@ -11,8 +12,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type OpenAIService interface {
+	CreateSong(ctx context.Context, bpm int, subject, emotion, language, genre string) (song openai.Song, err error)
+}
+
 type SongCtrl struct {
-	openAIService *openai.OpenAIService
+	openAIService OpenAIService
 }
 
 func NewSongCtrl() SongCtrl {
@@ -32,7 +37,7 @@ type Body struct {
 	Emotion  string `json:"emotion" validate:"required,is-emotion"`
 	Language string `json:"language" validate:"required,is-language"`
 	Genre    string `json:"genre" validate:"required,is-genre"`
-	Subject  string `json:"subject" validate:"required"`
+	Subject  string `json:"subject" validate:"require,is-subject"`
 }
 
 func (ctrl *SongCtrl) CreateSong(c *gin.Context) {
@@ -68,6 +73,7 @@ func (ctrl *SongCtrl) GetChoices(c *gin.Context) {
 		"genres":    util.Genres,
 		"languages": util.Languages,
 		"bpm":       util.BPMChoices,
+		"subjects":  util.Subjects,
 	})
 }
 

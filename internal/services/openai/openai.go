@@ -13,13 +13,13 @@ type Config struct {
 	Token string `json:"token"`
 }
 
-type OpenAIService struct {
+type Service struct {
 	token  string
 	client *goopenai.Client
 }
 
-func NewOrderAIService(cfg Config) *OpenAIService {
-	return &OpenAIService{
+func NewOrderAIService(cfg Config) *Service {
+	return &Service{
 		token:  cfg.Token,
 		client: goopenai.NewClient(cfg.Token),
 	}
@@ -47,7 +47,7 @@ type Phrase struct {
 	Chords []string `json:"chords"`
 }
 
-func (o *OpenAIService) CreateSong(ctx context.Context,
+func (o *Service) CreateSong(ctx context.Context,
 	bpm int, subject, emotion, language, genre string,
 ) (song Song, err error) {
 	request := util.CompactString(fmt.Sprintf(`

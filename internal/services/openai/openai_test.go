@@ -11,7 +11,6 @@ import (
 
 func TestCreateSong(t *testing.T) {
 	test.SetupTest()
-	// mock response
 	openAIService := NewOrderAIService(
 		Config{
 			Token: os.Getenv("OPENAI_TOKEN"),

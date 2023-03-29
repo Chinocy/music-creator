@@ -38,7 +38,13 @@ func ValidateStruct(body interface{}) (clientErrs []string) {
 			tagName:        "is-emotion",
 			errorMsg:       fmt.Sprintf("{0} must be a valid emotion (%s)", strings.Join(Emotions, ", ")),
 			validationFunc: validateEmotion,
-		}}
+		},
+		{
+			tagName:        "is-subject",
+			errorMsg:       fmt.Sprintf("{0} must be a valid subject (%s)", strings.Join(Subjects, ", ")),
+			validationFunc: validateSubject,
+		},
+	}
 	for _, customValidation := range customValidations {
 		registerCustomValidation(validate, trans, customValidation)
 	}
@@ -106,5 +112,11 @@ func validateGenre(fl validator.FieldLevel) bool {
 func validateEmotion(fl validator.FieldLevel) bool {
 	emotion := fl.Field().String()
 	_, ok := EmotionsMap[emotion]
+	return ok
+}
+
+func validateSubject(fl validator.FieldLevel) bool {
+	subject := fl.Field().String()
+	_, ok := SubjectsMap[subject]
 	return ok
 }

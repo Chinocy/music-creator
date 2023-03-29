@@ -50,3 +50,41 @@ var LanguagesMap = map[string]bool{
 var BPMChoices = []int{
 	60, 100, 140,
 }
+
+var Subjects = []string{
+	"vacations",
+	"relax and chill",
+	"no pain no gain",
+	"summer",
+	"moon",
+	"love",
+	"childhood",
+	"family",
+	"soccer",
+	"food",
+	"dog",
+	"dance",
+	"revenge",
+	"dream",
+	"friendship",
+	"party",
+}
+
+var SubjectsMap = map[string]bool{
+	"vacations":       true,
+	"relax and chill": true,
+	"no pain no gain": true,
+	"summer":          true,
+	"moon":            true,
+	"love":            true,
+	"childhood":       true,
+	"family":          true,
+	"soccer":          true,
+	"food":            true,
+	"dog":             true,
+	"dance":           true,
+	"revenge":         true,
+	"dream":           true,
+	"friendship":      true,
+	"party":           true,
+}
