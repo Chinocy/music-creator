@@ -37,7 +37,7 @@ type Body struct {
 	Emotion  string `json:"emotion" validate:"required,is-emotion"`
 	Language string `json:"language" validate:"required,is-language"`
 	Genre    string `json:"genre" validate:"required,is-genre"`
-	Subject  string `json:"subject" validate:"require,is-subject"`
+	Subject  string `json:"subject" validate:"required,is-subject"`
 }
 
 func (ctrl *SongCtrl) CreateSong(c *gin.Context) {
