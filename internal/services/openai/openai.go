@@ -61,8 +61,6 @@ func (o *Service) CreateSong(ctx context.Context,
 	Every paragraph must be separated by 2 break lines and its lines must be separated by 1 break line.
 	`, bpm, subject, genre, emotion, language))
 
-	fmt.Println(request)
-
 	resp, err := o.client.CreateChatCompletion(
 		ctx,
 		goopenai.ChatCompletionRequest{
@@ -155,15 +153,14 @@ func GetTitleAndParagraphs(content string) (title string, ps []Paragraph) {
 }
 
 func isChord(line string) bool {
-	chordText := strings.Replace(line, "(", " ", -1)
-	chordText = strings.Replace(chordText, ")", " ", -1)
-	chordText = strings.Replace(chordText, "|", " ", -1)
+	chordText := cleanLine(line)
 	size := len(strings.Split(chordText, "-"))
 	if size > 1 {
 		return true
 	}
 	splitted := strings.Split(chordText, " ")
 	for _, word := range splitted {
+		// implement regex
 		if len(strings.TrimSpace(word)) > 3 {
 			return false
 		}
@@ -172,9 +169,16 @@ func isChord(line string) bool {
 }
 
 func getChords(line string) (chords []string) {
-	chordText := strings.Replace(line, "(", " ", -1)
-	chordText = strings.Replace(chordText, ")", " ", -1)
-	chordText = strings.Replace(chordText, "|", " ", -1)
+	chordText := cleanLine(line)
 	chords = strings.Fields(strings.Replace(chordText, "-", " ", -1))
+	return
+}
+
+func cleanLine(line string) (newLine string) {
+	newLine = strings.Replace(line, "(", " ", -1)
+	newLine = strings.Replace(newLine, ")", " ", -1)
+	newLine = strings.Replace(newLine, "|", " ", -1)
+	newLine = strings.Replace(newLine, "[", " ", -1)
+	newLine = strings.Replace(newLine, "]", " ", -1)
 	return
 }
