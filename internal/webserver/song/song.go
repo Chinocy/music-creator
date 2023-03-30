@@ -2,7 +2,6 @@ package song
 
 import (
 	"context"
-	"fmt"
 	"music-creator/internal/services/openai"
 	"music-creator/internal/util"
 	"net/http"
@@ -48,12 +47,11 @@ func (ctrl *SongCtrl) CreateSong(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Println(body)
-	// clientErrs := util.ValidateStruct(body)
-	// if len(clientErrs) > 0 {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"errors": clientErrs})
-	// 	return
-	// }
+	clientErrs := util.ValidateStruct(body)
+	if len(clientErrs) > 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"errors": clientErrs})
+		return
+	}
 
 	song, err := ctrl.openAIService.CreateSong(c,
 		body.BPM,
