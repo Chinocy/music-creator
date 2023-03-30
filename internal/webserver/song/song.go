@@ -2,9 +2,6 @@ package song
 
 import (
 	"context"
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"music-creator/internal/services/openai"
 	"music-creator/internal/util"
 	"net/http"
@@ -44,10 +41,6 @@ type Body struct {
 }
 
 func (ctrl *SongCtrl) CreateSong(c *gin.Context) {
-	bytea, _ := ioutil.ReadAll(c.Request.Body)
-	bodya := make(map[string]interface{})
-	json.Unmarshal(bytea, &bodya)
-	fmt.Println(bodya)
 	body := new(Body)
 	err := c.Bind(body)
 	if err != nil {
